@@ -52,6 +52,7 @@ model User {
   sessions  Session[]
   watchlist Watchlist[]
   reviews   Review[]
+  passwordResetTokens PasswordResetToken[]
 }
 
 model VerificationToken {
@@ -86,12 +87,20 @@ model Watchlist {
   id      String @id @default(cuid())
   userId  String
   movieId String
-  addedAt DateTime @default(now())
-
-  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movie   Movie  @relation(fields: [movieId], references: [id], onDelete: Cascade)
 
   @@unique([userId, movieId])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  used      Boolean  @default(false)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Review {

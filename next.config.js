@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['image.tmdb.org', 'via.placeholder.com', 'picsum.photos'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -18,6 +17,12 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'picsum.photos',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
         port: '',
         pathname: '/**',
       },
