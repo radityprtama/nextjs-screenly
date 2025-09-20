@@ -1,4 +1,4 @@
-# Nonton - Next.js Movie Streaming App
+# Screenly - Next.js Movie Streaming App
 
 A modern, full-stack movie streaming app (Netflix-like) built with Next.js App Router, TypeScript, Tailwind CSS, Prisma (SQLite), NextAuth, and TMDB API.
 
