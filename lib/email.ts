@@ -1,29 +1,32 @@
-import nodemailer from 'nodemailer'
+import nodemailer from "nodemailer";
 
 // Create transporter for sending emails
 const createTransporter = () => {
   return nodemailer.createTransport({
-    service: 'gmail',
+    service: "gmail",
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS, // App password, bukan password biasa
     },
-  })
-}
+  });
+};
 
 // Send password reset email
-export const sendPasswordResetEmail = async (email: string, resetToken: string) => {
-  const transporter = createTransporter()
-  
-  const resetUrl = `${process.env.NEXTAUTH_URL}/auth/reset-password?token=${resetToken}`
-  
+export const sendPasswordResetEmail = async (
+  email: string,
+  resetToken: string
+) => {
+  const transporter = createTransporter();
+
+  const resetUrl = `${process.env.NEXTAUTH_URL}/auth/reset-password?token=${resetToken}`;
+
   const mailOptions = {
     from: {
-      name: 'Nonton - Movie Streaming',
+      name: "Screenly - Movie Streaming",
       address: process.env.EMAIL_USER!,
     },
     to: email,
-    subject: 'Reset Your Password - Nonton',
+    subject: "Reset Your Password - Screenly",
     html: `
       <!DOCTYPE html>
       <html>
@@ -46,14 +49,14 @@ export const sendPasswordResetEmail = async (email: string, resetToken: string) 
       <body>
         <div class="container">
           <div class="header">
-            <h1 class="logo">NONTON</h1>
+            <h1 class="logo">Screenly</h1>
             <p style="color: #ffcccc; margin: 10px 0 0 0;">Reset Your Password</p>
           </div>
           
           <div class="content">
             <h2 style="color: #ffffff; margin-top: 0;">Password Reset Request</h2>
             <p>Hi there!</p>
-            <p>We received a request to reset your password for your Nonton account. If you made this request, click the button below to reset your password:</p>
+            <p>We received a request to reset your password for your Screenly account. If you made this request, click the button below to reset your password:</p>
             
             <div style="text-align: center; margin: 30px 0;">
               <a href="${resetUrl}" class="button">Reset My Password</a>
@@ -75,11 +78,11 @@ export const sendPasswordResetEmail = async (email: string, resetToken: string) 
             
             <p>If you have any questions or need help, please contact our support team.</p>
             
-            <p>Best regards,<br>The Nonton Team</p>
+            <p>Best regards,<br>The Screenly Team</p>
           </div>
           
           <div class="footer">
-            <p>© 2024 Nonton. All rights reserved.</p>
+            <p>© 2024 Screenly. All rights reserved.</p>
             <p>This is an automated email. Please do not reply to this message.</p>
           </div>
         </div>
@@ -87,11 +90,11 @@ export const sendPasswordResetEmail = async (email: string, resetToken: string) 
       </html>
     `,
     text: `
-      Reset Your Password - Nonton
+      Reset Your Password - Screenly
       
       Hi there!
       
-      We received a request to reset your password for your Nonton account.
+      We received a request to reset your password for your Screenly account.
       
       Click this link to reset your password: ${resetUrl}
       
@@ -100,38 +103,38 @@ export const sendPasswordResetEmail = async (email: string, resetToken: string) 
       If you didn't request this reset, please ignore this email.
       
       Best regards,
-      The Nonton Team
+      The Screenly Team
     `,
-  }
+  };
 
   try {
-    const info = await transporter.sendMail(mailOptions)
-    console.log('Password reset email sent:', info.messageId)
-    return { success: true, messageId: info.messageId }
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Password reset email sent:", info.messageId);
+    return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error('Error sending password reset email:', error)
-    throw new Error('Failed to send password reset email')
+    console.error("Error sending password reset email:", error);
+    throw new Error("Failed to send password reset email");
   }
-}
+};
 
 // Send welcome email for new users
 export const sendWelcomeEmail = async (email: string, name: string) => {
-  const transporter = createTransporter()
-  
+  const transporter = createTransporter();
+
   const mailOptions = {
     from: {
-      name: 'Nonton - Movie Streaming',
+      name: "Screenly - Movie Streaming",
       address: process.env.EMAIL_USER!,
     },
     to: email,
-    subject: 'Welcome to Nonton! 🎬',
+    subject: "Welcome to Screenly! 🎬",
     html: `
       <!DOCTYPE html>
       <html>
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Welcome to Nonton</title>
+        <title>Welcome to Screenly</title>
         <style>
           body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; background-color: #0f0f0f; }
           .container { max-width: 600px; margin: 0 auto; background-color: #1a1a1a; }
@@ -146,13 +149,13 @@ export const sendWelcomeEmail = async (email: string, name: string) => {
       <body>
         <div class="container">
           <div class="header">
-            <h1 class="logo">NONTON</h1>
+            <h1 class="logo">Screenly</h1>
             <p style="color: #ffcccc; margin: 10px 0 0 0;">Welcome to the Family!</p>
           </div>
           
           <div class="content">
             <h2 style="color: #ffffff; margin-top: 0;">Welcome, ${name}! 🎉</h2>
-            <p>Thank you for joining Nonton! We're excited to have you as part of our movie-loving community.</p>
+            <p>Thank you for joining Screenly! We're excited to have you as part of our movie-loving community.</p>
             
             <div class="feature">
               <h3 style="color: #E50914; margin-top: 0;">🎬 What you can do now:</h3>
@@ -170,25 +173,25 @@ export const sendWelcomeEmail = async (email: string, name: string) => {
             
             <p>If you have any questions or need help getting started, don't hesitate to reach out to our support team.</p>
             
-            <p>Happy watching!<br>The Nonton Team</p>
+            <p>Happy watching!<br>The Screenly Team</p>
           </div>
           
           <div class="footer">
-            <p>© 2024 Nonton. All rights reserved.</p>
+            <p>© 2024 Screenly. All rights reserved.</p>
           </div>
         </div>
       </body>
       </html>
     `,
-  }
+  };
 
   try {
-    const info = await transporter.sendMail(mailOptions)
-    console.log('Welcome email sent:', info.messageId)
-    return { success: true, messageId: info.messageId }
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Welcome email sent:", info.messageId);
+    return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error('Error sending welcome email:', error)
+    console.error("Error sending welcome email:", error);
     // Don't throw error for welcome email, it's not critical
-    return { success: false, error: error }
+    return { success: false, error: error };
   }
-}
+};

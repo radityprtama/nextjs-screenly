@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Play, Plus, ThumbsUp, ChevronDown, Heart, Info } from 'lucide-react'
@@ -30,6 +30,7 @@ interface MovieCardProps {
 
 export default function MovieCard({ movie, onAddToWatchlist, isInWatchlist }: MovieCardProps) {
   const [isHovered, setIsHovered] = useState(false)
+  const [showTrailer, setShowTrailer] = useState(false)
 
   // Convert movie data to ensure all required fields
   const movieData = {
@@ -45,6 +46,17 @@ export default function MovieCard({ movie, onAddToWatchlist, isInWatchlist }: Mo
     trailer: movie.trailer,
   }
 
+  // Auto-play trailer on hover with delay
+  useEffect(() => {
+    let timer: NodeJS.Timeout
+    if (isHovered && movieData.trailer) {
+      timer = setTimeout(() => setShowTrailer(true), 1500) // 1.5 second delay
+    } else {
+      setShowTrailer(false)
+    }
+    return () => clearTimeout(timer)
+  }, [isHovered, movieData.trailer])
+
   return (
     <motion.div
       className="relative group cursor-pointer"
@@ -55,13 +67,29 @@ export default function MovieCard({ movie, onAddToWatchlist, isInWatchlist }: Mo
     >
       <MovieDetailModal movie={movieData}>
         <div className="relative aspect-[2/3] rounded-md overflow-hidden bg-gray-800">
-          <Image
-            src={movieData.poster}
-            alt={movie.title}
-            fill
-            className="object-cover transition-transform duration-300 group-hover:scale-110"
-          />
+          {showTrailer && movieData.trailer ? (
+            <iframe
+              src={`${movieData.trailer.replace('watch?v=', 'embed/')}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&loop=1&playlist=${movieData.trailer.split('v=')[1]}`}
+              className="w-full h-full object-cover"
+              allow="autoplay; encrypted-media"
+            />
+          ) : (
+            <Image
+              src={movieData.poster}
+              alt={movie.title}
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-110"
+            />
+          )}
           
+          {/* Trailer Indicator */}
+          {movieData.trailer && !showTrailer && (
+            <div className="absolute top-2 right-2 bg-netflix-red text-white text-xs px-2 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <Play className="h-3 w-3 inline mr-1" />
+              Trailer
+            </div>
+          )}
+
           {/* Overlay */}
           <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           
@@ -72,8 +100,8 @@ export default function MovieCard({ movie, onAddToWatchlist, isInWatchlist }: Mo
               animate={{ opacity: 1, y: 0 }}
               className="absolute inset-0 flex flex-col justify-end p-4 text-white"
             >
-              <h3 className="font-bold text-lg mb-2 line-clamp-2">{movie.title}</h3>
-              <p className="text-sm text-gray-300 mb-3 line-clamp-3">{movie.description}</p>
+              <h3 className="title-display text-lg mb-2 line-clamp-2">{movie.title}</h3>
+              <p className="text-caption text-gray-300 mb-3 line-clamp-3">{movie.description}</p>
               
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center space-x-2 text-xs">
@@ -125,8 +153,8 @@ export default function MovieCard({ movie, onAddToWatchlist, isInWatchlist }: Mo
       
       {/* Title (always visible) */}
       <div className="mt-2">
-        <h3 className="text-white text-sm font-medium line-clamp-2">{movie.title}</h3>
-        <p className="text-gray-400 text-xs">{movie.genre}</p>
+        <h3 className="text-white text-sm font-display font-medium line-clamp-2">{movie.title}</h3>
+        <p className="text-gray-400 text-xs font-sans">{movie.genre}</p>
       </div>
     </motion.div>
   )

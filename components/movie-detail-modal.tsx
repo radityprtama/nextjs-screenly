@@ -85,10 +85,10 @@ export default function MovieDetailModal({ movie, children }: MovieDetailModalPr
         <div className="relative">
           {/* Hero Section with Backdrop */}
           <div className="relative h-[50vh] w-full">
-            {movie.trailer && !isMuted ? (
+            {movie.trailer ? (
               <div className="w-full h-full">
                 <iframe
-                  src={`${movie.trailer.replace('watch?v=', 'embed/')}?autoplay=1&mute=0&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1`}
+                  src={`${movie.trailer.replace('watch?v=', 'embed/')}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&loop=1&playlist=${movie.trailer.split('v=')[1]}`}
                   className="w-full h-full"
                   allow="autoplay; encrypted-media"
                   allowFullScreen
@@ -122,7 +122,7 @@ export default function MovieDetailModal({ movie, children }: MovieDetailModalPr
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                <h1 className="title-display text-3xl md:text-4xl text-white mb-4">
                   {movie.title}
                 </h1>
                 
@@ -199,7 +199,7 @@ export default function MovieDetailModal({ movie, children }: MovieDetailModalPr
                   <span>{formatDuration(movie.duration)}</span>
                 </div>
 
-                <p className="text-white text-base leading-relaxed mb-6">
+                <p className="text-body text-white text-base mb-6">
                   {movie.description}
                 </p>
 
@@ -224,7 +224,7 @@ export default function MovieDetailModal({ movie, children }: MovieDetailModalPr
 
                 {/* About */}
                 <div>
-                  <h3 className="text-white font-semibold mb-4">About {movie.title}</h3>
+                  <h3 className="title-section text-white mb-4">About {movie.title}</h3>
                   <div className="space-y-2 text-sm">
                     <p className="text-gray-400">
                       <span className="text-gray-500">Director:</span> Anthony Russo, Joe Russo
@@ -291,7 +291,7 @@ function SimilarMovies({ movieId }: { movieId: string }) {
 
   return (
     <div>
-      <h3 className="text-white font-semibold mb-4">More Like This</h3>
+      <h3 className="title-section text-white mb-4">More Like This</h3>
       <div className="space-y-3">
         {similarMovies.slice(0, 3).map((movie) => (
           <MovieDetailModal key={movie.id} movie={movie}>

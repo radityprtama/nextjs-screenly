@@ -1,16 +1,20 @@
-'use client'
+"use client";
 
-import Image from 'next/image'
-import Link from 'next/link'
-import { motion } from 'framer-motion'
+import Image from "next/image";
+import Link from "next/link";
+import { motion } from "framer-motion";
 
 interface AuthLayoutProps {
-  children: React.ReactNode
-  title: string
-  subtitle?: string
+  children: React.ReactNode;
+  title: string;
+  subtitle?: string;
 }
 
-export default function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
+export default function AuthLayout({
+  children,
+  title,
+  subtitle,
+}: AuthLayoutProps) {
   return (
     <div className="min-h-screen flex">
       {/* Left Side - Form */}
@@ -24,7 +28,9 @@ export default function AuthLayout({ children, title, subtitle }: AuthLayoutProp
           {/* Logo */}
           <div className="text-center">
             <Link href="/" className="inline-block">
-              <h1 className="text-4xl font-bold text-netflix-red mb-2">NONTON</h1>
+              <h1 className="text-4xl font-bold text-netflix-red mb-2">
+                Screenly
+              </h1>
             </Link>
             <h2 className="text-2xl font-bold text-white">{title}</h2>
             {subtitle && (
@@ -49,7 +55,7 @@ export default function AuthLayout({ children, title, subtitle }: AuthLayoutProp
           className="object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent" />
-        
+
         {/* Floating elements */}
         <div className="absolute inset-0 overflow-hidden">
           <motion.div
@@ -87,11 +93,14 @@ export default function AuthLayout({ children, title, subtitle }: AuthLayoutProp
             transition={{ delay: 1, duration: 1 }}
             className="text-white text-lg font-medium"
           >
-            "The best way to find out if you can trust somebody is to trust them."
-            <footer className="mt-2 text-gray-400 text-sm">— Ernest Hemingway</footer>
+            "The best way to find out if you can trust somebody is to trust
+            them."
+            <footer className="mt-2 text-gray-400 text-sm">
+              — Ernest Hemingway
+            </footer>
           </motion.blockquote>
         </div>
       </div>
     </div>
-  )
+  );
 }

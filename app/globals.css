@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,7 +13,24 @@ html, body, :root {
 }
 
 body {
-  @apply bg-netflix-black text-white;
+  @apply bg-netflix-black text-white font-sans;
+}
+
+/* Enhanced Typography */
+.title-display {
+  @apply font-display font-bold tracking-tight;
+}
+
+.title-section {
+  @apply font-display font-semibold tracking-wide;
+}
+
+.text-body {
+  @apply font-sans leading-relaxed;
+}
+
+.text-caption {
+  @apply font-sans text-sm leading-normal;
 }
 
 .container-page {
@@ -146,4 +165,26 @@ input[type="checkbox"]::before {
 
 input[type="checkbox"]:checked::before {
   transform: scale(1);
+}
+
+/* Custom slider styles */
+.slider::-webkit-slider-thumb {
+  appearance: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: #E50914;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.slider::-moz-range-thumb {
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: #E50914;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
