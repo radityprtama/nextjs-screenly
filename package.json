@@ -11,7 +11,10 @@
     "db:studio": "prisma studio",
     "db:seed": "tsx prisma/seed.ts",
     "fetch:movies": "tsx scripts/fetch-tmdb-movies.ts",
-    "fetch:movies:test": "tsx scripts/fetch-tmdb-test.ts"
+    "fetch:movies:test": "tsx scripts/fetch-tmdb-test.ts",
+    "test:sendgrid": "node scripts/test-sendgrid.js",
+    "debug:email": "node scripts/debug-email.js",
+    "setup:domain": "node scripts/setup-domain-auth.js"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.7",
@@ -22,6 +25,7 @@
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tabs": "^1.0.4",
+    "@sendgrid/mail": "^8.1.6",
     "@types/bcryptjs": "^2.4.6",
     "@types/nodemailer": "^7.0.1",
     "bcryptjs": "^2.4.3",

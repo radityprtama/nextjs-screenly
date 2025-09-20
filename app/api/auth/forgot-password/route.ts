@@ -41,18 +41,22 @@ export async function POST(req: Request) {
       }
     })
 
-    // Send email if email service is configured
-    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+    // Send email if email service is configured (SendGrid or Gmail)
+    const hasEmailConfig = (process.env.SENDGRID_API_KEY && process.env.SENDGRID_FROM_EMAIL) || 
+                          (process.env.EMAIL_USER && process.env.EMAIL_PASS);
+    
+    if (hasEmailConfig) {
       try {
         await sendPasswordResetEmail(email, resetToken)
-        console.log(`Password reset email sent to: ${email}`)
+        console.log(`✅ Password reset email sent to: ${email}`)
       } catch (emailError) {
-        console.error('Failed to send email:', emailError)
+        console.error('❌ Failed to send email:', emailError)
         // Don't fail the request if email fails, just log it
       }
     } else {
       // For development - log the reset link
-      console.log(`Reset link for ${email}: ${process.env.NEXTAUTH_URL}/auth/reset-password?token=${resetToken}`)
+      console.log(`🔗 Reset link for ${email}: ${process.env.NEXTAUTH_URL}/auth/reset-password?token=${resetToken}`)
+      console.log('💡 Configure SendGrid or Gmail to send actual emails')
     }
 
     return NextResponse.json({ 
