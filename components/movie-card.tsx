@@ -8,25 +8,7 @@ import { Button } from '@/components/ui/button'
 import { formatDuration, formatYear } from '@/lib/utils'
 import { motion } from 'framer-motion'
 import MovieDetailModal from '@/components/movie-detail-modal'
-
-interface Movie {
-  id: string
-  title: string
-  description: string
-  poster: string | null
-  backdrop: string | null
-  genre: string
-  year: number
-  rating: number
-  duration: number
-  trailer?: string
-}
-
-interface MovieCardProps {
-  movie: Movie
-  onAddToWatchlist?: (movieId: string) => void
-  isInWatchlist?: boolean
-}
+import { Movie, MovieCardProps } from '@/types/movie'
 
 export default function MovieCard({ movie, onAddToWatchlist, isInWatchlist }: MovieCardProps) {
   const [isHovered, setIsHovered] = useState(false)

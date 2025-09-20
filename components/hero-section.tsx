@@ -6,23 +6,7 @@ import { Play, Info, Volume2, VolumeX } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import MovieDetailModal from '@/components/movie-detail-modal'
-
-interface Movie {
-  id: string
-  title: string
-  description: string
-  poster: string
-  backdrop: string
-  genre: string
-  year: number
-  rating: number
-  duration: number
-  trailer?: string
-}
-
-interface HeroSectionProps {
-  movie: Movie
-}
+import { Movie, HeroSectionProps } from '@/types/movie'
 
 export default function HeroSection({ movie }: HeroSectionProps) {
   const [isMuted, setIsMuted] = useState(true)
@@ -30,7 +14,7 @@ export default function HeroSection({ movie }: HeroSectionProps) {
   return (
     <section className="relative h-[60vh] md:h-[70vh] w-full">
       <Image
-        src={movie.backdrop}
+        src={movie.backdrop || movie.poster || '/placeholder-movie.svg'}
         alt={movie.title}
         fill
         priority

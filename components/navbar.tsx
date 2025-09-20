@@ -3,7 +3,16 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
-import { Search, Bell, User, LogOut, Settings, Heart } from "lucide-react";
+import {
+  Search,
+  Bell,
+  User,
+  LogOut,
+  Settings,
+  Heart,
+  Menu,
+  X,
+} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { getInitials } from "@/lib/utils";
@@ -11,150 +20,236 @@ import { getInitials } from "@/lib/utils";
 export default function Navbar() {
   const { data: session } = useSession();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 z-50 w-full bg-gradient-to-b from-black/80 to-transparent backdrop-blur-sm">
-      <div className="flex items-center justify-between px-4 py-4 md:px-8">
-        {/* Logo */}
-        <div className="flex items-center space-x-8">
-          <Link href="/" className="text-2xl font-bold text-netflix-red">
-            Screenly
-          </Link>
+    <>
+      <nav className="fixed top-0 left-0 right-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 mt-2">
+            {/* Main navbar container */}
+            <div className="flex items-center justify-between w-full bg-black/20 backdrop-blur-2xl rounded-full border border-white/10 px-6 py-3 shadow-2xl">
+              {/* Left side - Logo */}
+              <div className="flex items-center">
+                <Link href="/" className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-gradient-to-br from-red-500 to-red-700 rounded-full flex items-center justify-center">
+                    <span className="text-white font-bold text-sm">S</span>
+                  </div>
+                  <span className="text-xl font-bold text-white hidden sm:block">
+                    Screenly
+                  </span>
+                </Link>
+              </div>
 
-          {/* Navigation Links */}
-          <div className="hidden md:flex items-center space-x-6">
-            <Link
-              href="/"
-              className="text-white hover:text-gray-300 transition-colors"
-            >
-              Home
-            </Link>
-            <Link
-              href="/movies"
-              className="text-white hover:text-gray-300 transition-colors"
-            >
-              Movies
-            </Link>
-            <Link
-              href="/watchlist"
-              className="text-white hover:text-gray-300 transition-colors"
-            >
-              My List
-            </Link>
-          </div>
-        </div>
-
-        {/* Right Side */}
-        <div className="flex items-center space-x-4">
-          {/* Search */}
-          <Link href="/search">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-white hover:bg-white/10"
-            >
-              <Search className="h-5 w-5" />
-            </Button>
-          </Link>
-
-          {session ? (
-            <>
-              {/* Notifications */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-white hover:bg-white/10"
-              >
-                <Bell className="h-5 w-5" />
-              </Button>
-
-              {/* Profile Dropdown */}
-              <div className="relative">
-                <button
-                  onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="flex items-center space-x-2 text-white hover:text-gray-300 transition-colors"
+              {/* Center - Navigation Links (Desktop) */}
+              <div className="hidden md:flex items-center space-x-1 bg-white/5 backdrop-blur-sm rounded-full px-2 py-1 border border-white/10">
+                <Link
+                  href="/"
+                  className="px-4 py-2 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all duration-300"
                 >
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={session.user?.image || ""} />
-                    <AvatarFallback className="bg-netflix-red text-white text-sm">
-                      {getInitials(
-                        session.user?.name || session.user?.email || "U"
-                      )}
-                    </AvatarFallback>
-                  </Avatar>
-                </button>
+                  Home
+                </Link>
+                <Link
+                  href="/movies"
+                  className="px-4 py-2 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all duration-300"
+                >
+                  Movies
+                </Link>
+                <Link
+                  href="/watchlist"
+                  className="px-4 py-2 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all duration-300"
+                >
+                  My List
+                </Link>
+              </div>
 
-                {isProfileOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-black/90 backdrop-blur-sm rounded-md shadow-lg py-2 z-50">
-                    <div className="px-4 py-2 border-b border-gray-700">
-                      <p className="text-sm text-white font-medium">
-                        {session.user?.name}
-                      </p>
-                      <p className="text-xs text-gray-400">
-                        {session.user?.email}
-                      </p>
-                    </div>
+              {/* Right side - Actions */}
+              <div className="flex items-center space-x-2">
+                {/* Search */}
+                <Link href="/search">
+                  <button className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/20 flex items-center justify-center transition-all duration-300 group">
+                    <Search className="w-4 h-4 text-white/80 group-hover:text-white group-hover:scale-110 transition-all duration-300" />
+                  </button>
+                </Link>
 
-                    <Link
-                      href="/profile"
-                      className="flex items-center px-4 py-2 text-sm text-white hover:bg-white/10 transition-colors"
-                      onClick={() => setIsProfileOpen(false)}
-                    >
-                      <User className="h-4 w-4 mr-3" />
-                      Profile
-                    </Link>
-
-                    <Link
-                      href="/watchlist"
-                      className="flex items-center px-4 py-2 text-sm text-white hover:bg-white/10 transition-colors"
-                      onClick={() => setIsProfileOpen(false)}
-                    >
-                      <Heart className="h-4 w-4 mr-3" />
-                      Watchlist
-                    </Link>
-
-                    <Link
-                      href="/settings"
-                      className="flex items-center px-4 py-2 text-sm text-white hover:bg-white/10 transition-colors"
-                      onClick={() => setIsProfileOpen(false)}
-                    >
-                      <Settings className="h-4 w-4 mr-3" />
-                      Settings
-                    </Link>
-
-                    <button
-                      onClick={() => {
-                        signOut();
-                        setIsProfileOpen(false);
-                      }}
-                      className="flex items-center w-full px-4 py-2 text-sm text-white hover:bg-white/10 transition-colors"
-                    >
-                      <LogOut className="h-4 w-4 mr-3" />
-                      Sign Out
+                {session ? (
+                  <>
+                    {/* Notifications */}
+                    <button className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/20 flex items-center justify-center transition-all duration-300 group relative">
+                      <Bell className="w-4 h-4 text-white/80 group-hover:text-white group-hover:scale-110 transition-all duration-300" />
+                      <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full text-xs"></span>
                     </button>
+
+                    {/* Profile */}
+                    <div className="relative">
+                      <button
+                        onClick={() => setIsProfileOpen(!isProfileOpen)}
+                        className="flex items-center space-x-2 bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/20 rounded-full px-3 py-2 transition-all duration-300 group"
+                      >
+                        <Avatar className="w-6 h-6">
+                          <AvatarImage src={session.user?.image || ""} />
+                          <AvatarFallback className="bg-gradient-to-br from-red-500 to-red-700 text-white text-xs">
+                            {getInitials(
+                              session.user?.name || session.user?.email || "U"
+                            )}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="text-sm font-medium text-white/80 group-hover:text-white hidden sm:block">
+                          {session.user?.name?.split(" ")[0] || "User"}
+                        </span>
+                      </button>
+
+                      {/* Profile Dropdown */}
+                      {isProfileOpen && (
+                        <div className="absolute right-0 top-12 w-64 bg-black/40 backdrop-blur-2xl rounded-2xl border border-white/20 shadow-2xl overflow-hidden animate-in fade-in-0 zoom-in-95 duration-200">
+                          {/* Header */}
+                          <div className="p-4 bg-gradient-to-r from-white/5 to-white/10 border-b border-white/10">
+                            <div className="flex items-center space-x-3">
+                              <Avatar className="w-12 h-12 border-2 border-white/20">
+                                <AvatarImage src={session.user?.image || ""} />
+                                <AvatarFallback className="bg-gradient-to-br from-red-500 to-red-700 text-white">
+                                  {getInitials(
+                                    session.user?.name ||
+                                      session.user?.email ||
+                                      "U"
+                                  )}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <p className="font-semibold text-white text-sm">
+                                  {session.user?.name}
+                                </p>
+                                <p className="text-white/60 text-xs">
+                                  {session.user?.email}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Menu Items */}
+                          <div className="p-2">
+                            <Link
+                              href="/profile"
+                              onClick={() => setIsProfileOpen(false)}
+                              className="flex items-center space-x-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group"
+                            >
+                              <User className="w-4 h-4 text-white/80 group-hover:text-white" />
+                              <span className="text-sm text-white/80 group-hover:text-white">
+                                Profile
+                              </span>
+                            </Link>
+                            <Link
+                              href="/watchlist"
+                              onClick={() => setIsProfileOpen(false)}
+                              className="flex items-center space-x-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group"
+                            >
+                              <Heart className="w-4 h-4 text-white/80 group-hover:text-white" />
+                              <span className="text-sm text-white/80 group-hover:text-white">
+                                Watchlist
+                              </span>
+                            </Link>
+                            <Link
+                              href="/settings"
+                              onClick={() => setIsProfileOpen(false)}
+                              className="flex items-center space-x-3 px-3 py-3 rounded-xl hover:bg-white/10 transition-all duration-200 group"
+                            >
+                              <Settings className="w-4 h-4 text-white/80 group-hover:text-white" />
+                              <span className="text-sm text-white/80 group-hover:text-white">
+                                Settings
+                              </span>
+                            </Link>
+
+                            {/* Divider */}
+                            <div className="my-2 h-px bg-white/10"></div>
+
+                            <button
+                              onClick={() => {
+                                signOut();
+                                setIsProfileOpen(false);
+                              }}
+                              className="flex items-center space-x-3 px-3 py-3 rounded-xl hover:bg-red-500/20 transition-all duration-200 group w-full text-left"
+                            >
+                              <LogOut className="w-4 h-4 text-white/80 group-hover:text-red-400" />
+                              <span className="text-sm text-white/80 group-hover:text-red-400">
+                                Sign Out
+                              </span>
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex items-center space-x-2">
+                    <Link href="/auth/signin">
+                      <button className="px-4 py-2 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all duration-300">
+                        Sign In
+                      </button>
+                    </Link>
+                    <Link href="/auth/signup">
+                      <button className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 rounded-full transition-all duration-300 shadow-lg hover:shadow-red-500/25">
+                        Sign Up
+                      </button>
+                    </Link>
                   </div>
                 )}
-              </div>
-            </>
-          ) : (
-            <div className="flex items-center space-x-2">
-              <Link href="/auth/signin">
-                <Button
-                  variant="ghost"
-                  className="text-white hover:bg-white/10"
+
+                {/* Mobile menu toggle */}
+                <button
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  className="md:hidden w-10 h-10 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/20 flex items-center justify-center transition-all duration-300"
                 >
-                  Sign In
-                </Button>
-              </Link>
-              <Link href="/auth/signup">
-                <Button className="bg-netflix-red hover:bg-netflix-red/90">
-                  Sign Up
-                </Button>
-              </Link>
+                  {isMobileMenuOpen ? (
+                    <X className="w-4 h-4 text-white" />
+                  ) : (
+                    <Menu className="w-4 h-4 text-white" />
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile Menu */}
+          {isMobileMenuOpen && (
+            <div className="md:hidden mt-2 bg-black/40 backdrop-blur-2xl rounded-2xl border border-white/20 p-4 animate-in fade-in-0 slide-in-from-top-2 duration-200">
+              <div className="space-y-2">
+                <Link
+                  href="/"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block px-4 py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200"
+                >
+                  Home
+                </Link>
+                <Link
+                  href="/movies"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block px-4 py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200"
+                >
+                  Movies
+                </Link>
+                <Link
+                  href="/watchlist"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block px-4 py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-200"
+                >
+                  My List
+                </Link>
+              </div>
             </div>
           )}
         </div>
-      </div>
-    </nav>
+      </nav>
+
+      {/* Click outside to close dropdowns */}
+      {(isProfileOpen || isMobileMenuOpen) && (
+        <div
+          className="fixed inset-0 z-30"
+          onClick={() => {
+            setIsProfileOpen(false);
+            setIsMobileMenuOpen(false);
+          }}
+        ></div>
+      )}
+    </>
   );
 }

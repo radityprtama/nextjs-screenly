@@ -88,11 +88,15 @@ async function main() {
   console.log('Seeding movies...')
   
   for (const movie of movies) {
-    await prisma.movie.upsert({
-      where: { title: movie.title },
-      update: {},
-      create: movie,
+    const existingMovie = await prisma.movie.findFirst({
+      where: { title: movie.title }
     })
+    
+    if (!existingMovie) {
+      await prisma.movie.create({
+        data: movie
+      })
+    }
   }
 
   console.log('Seeding completed!')

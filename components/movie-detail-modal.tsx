@@ -10,23 +10,7 @@ import { Button } from '@/components/ui/button'
 import { formatDuration, formatYear } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
 
-interface Movie {
-  id: string
-  title: string
-  description: string
-  poster: string
-  backdrop: string
-  genre: string
-  year: number
-  rating: number
-  duration: number
-  trailer?: string
-}
-
-interface MovieDetailModalProps {
-  movie: Movie
-  children: React.ReactNode
-}
+import { Movie, MovieDetailModalProps } from '@/types/movie'
 
 export default function MovieDetailModal({ movie, children }: MovieDetailModalProps) {
   const { data: session } = useSession()
@@ -85,7 +69,7 @@ export default function MovieDetailModal({ movie, children }: MovieDetailModalPr
         <div className="relative">
           {/* Hero Section with Backdrop */}
           <div className="relative h-[50vh] w-full">
-            {movie.trailer ? (
+            {movie.trailer && movie.trailer.trim() !== '' ? (
               <div className="w-full h-full">
                 <iframe
                   src={`${movie.trailer.replace('watch?v=', 'embed/')}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&loop=1&playlist=${movie.trailer.split('v=')[1]}`}
@@ -96,7 +80,7 @@ export default function MovieDetailModal({ movie, children }: MovieDetailModalPr
               </div>
             ) : (
               <Image
-                src={movie.backdrop}
+                src={movie.backdrop || movie.poster || '/placeholder-movie.svg'}
                 alt={movie.title}
                 fill
                 className="object-cover"
@@ -298,7 +282,7 @@ function SimilarMovies({ movieId }: { movieId: string }) {
             <div className="flex gap-3 p-3 bg-netflix-gray rounded hover:bg-gray-700 transition-colors cursor-pointer">
               <div className="w-16 h-24 rounded flex-shrink-0 overflow-hidden">
                 <Image
-                  src={movie.poster}
+                  src={movie.poster || movie.backdrop || '/placeholder-movie.svg'}
                   alt={movie.title}
                   width={64}
                   height={96}

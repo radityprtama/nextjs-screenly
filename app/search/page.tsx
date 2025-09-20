@@ -6,18 +6,7 @@ import MovieCard from '@/components/movie-card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Search } from 'lucide-react'
-
-interface Movie {
-  id: string
-  title: string
-  description: string
-  poster: string
-  backdrop: string
-  genre: string
-  year: number
-  rating: number
-  duration: number
-}
+import { Movie } from '@/types/movie'
 
 export default function SearchPage() {
   const searchParams = useSearchParams()

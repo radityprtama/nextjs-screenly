@@ -7,7 +7,7 @@ export default function DemoPage() {
       <header className="bg-netflix-black/95 backdrop-blur-sm border-b border-gray-800 sticky top-0 z-50">
         <div className="container-page py-4">
           <h1 className="title-display text-2xl text-netflix-red">
-            🎬 NextJS Screenly - Demo
+            🎬 Screenly
           </h1>
           <p className="text-gray-400 mt-2">
             Testing enhanced fonts and trailer functionality
