@@ -61,7 +61,7 @@ export default function SearchPage() {
   }
 
   return (
-    <div className="container-page py-8">
+    <div className="container-page py-10 mt-12">
       <h1 className="section-title">Search Movies</h1>
       
       <form onSubmit={handleSubmit} className="flex gap-2 mb-8 max-w-md">

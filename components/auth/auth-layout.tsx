@@ -28,7 +28,7 @@ export default function AuthLayout({
           {/* Logo */}
           <div className="text-center">
             <Link href="/" className="inline-block">
-              <h1 className="text-4xl font-bold text-netflix-red mb-2">
+              <h1 className="text-4xl font-bold text-netflix-red mb-2 mt-9">
                 Screenly
               </h1>
             </Link>

@@ -16,6 +16,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { getInitials } from "@/lib/utils";
+import Image from "next/image";
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -32,8 +33,8 @@ export default function Navbar() {
               {/* Left side - Logo */}
               <div className="flex items-center">
                 <Link href="/" className="flex items-center space-x-2">
-                  <div className="w-8 h-8 bg-gradient-to-br from-red-500 to-red-700 rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">S</span>
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center">
+                    <Image src="/favicon.svg" alt="Logo" width={24} height={24} />
                   </div>
                   <span className="text-xl font-bold text-white hidden sm:block">
                     Screenly

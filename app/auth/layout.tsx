@@ -6,7 +6,7 @@ import Providers from "@/components/providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Authentication - Screenly",
+  title: "Auth - Screenly",
   description: "Sign in or create your Screenly account",
   icons: {
     icon: [
