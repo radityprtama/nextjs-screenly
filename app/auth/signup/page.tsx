@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import AuthLayout from "@/components/auth/auth-layout";
 import ModernInput from "@/components/auth/modern-input";
 import ModernButton from "@/components/auth/modern-button";
+import ModernCheckbox from "@/components/auth/modern-checkbox";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -18,6 +19,7 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const [sendUpdates, setSendUpdates] = useState(false);
 
   // Password strength validation
   const getPasswordStrength = (password: string) => {
@@ -82,12 +84,12 @@ export default function SignUpPage() {
         </div>
         <span className="hidden sm:inline font-medium">Back to Home</span>
       </Link>
-      
+
       <AuthLayout
         title="Join Screenly"
         subtitle="Create your account and start watching amazing movies"
       >
-        <form onSubmit={onSubmit} className="space-y-6">
+        <form onSubmit={onSubmit} className="space-y-4">
           {error && (
             <motion.div
               initial={{ opacity: 0, y: -10 }}
@@ -98,7 +100,7 @@ export default function SignUpPage() {
             </motion.div>
           )}
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             <ModernInput
               label="Full Name"
               type="text"
@@ -133,7 +135,7 @@ export default function SignUpPage() {
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
-                  className="mt-3 space-y-2"
+                  className="mt-2 space-y-1.5"
                 >
                   <div className="flex gap-1">
                     {[1, 2, 3, 4, 5].map((level) => (
@@ -151,7 +153,7 @@ export default function SignUpPage() {
                       />
                     ))}
                   </div>
-                  <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="grid grid-cols-3 gap-1 text-xs">
                     {Object.entries(passwordStrength.checks).map(
                       ([key, passed]) => (
                         <div
@@ -165,11 +167,11 @@ export default function SignUpPage() {
                             className={passed ? "opacity-100" : "opacity-30"}
                           />
                           <span>
-                            {key === "length" && "8+ characters"}
-                            {key === "lowercase" && "Lowercase"}
-                            {key === "uppercase" && "Uppercase"}
+                            {key === "length" && "8+ chars"}
+                            {key === "lowercase" && "Lower"}
+                            {key === "uppercase" && "Upper"}
                             {key === "number" && "Number"}
-                            {key === "special" && "Special char"}
+                            {key === "special" && "Special"}
                           </span>
                         </div>
                       )
@@ -194,41 +196,37 @@ export default function SignUpPage() {
             />
           </div>
 
-          <div className="space-y-4">
-            <label className="flex items-start gap-3">
-              <input
-                type="checkbox"
-                checked={acceptTerms}
-                onChange={(e) => setAcceptTerms(e.target.checked)}
-                className="w-4 h-4 mt-0.5 text-netflix-red bg-transparent border-gray-600 rounded focus:ring-netflix-red focus:ring-2"
-              />
-              <span className="text-sm text-gray-300 leading-relaxed">
-                I agree to the{" "}
-                <Link
-                  href="/terms"
-                  className="text-netflix-red hover:text-netflix-red/80"
-                >
-                  Terms of Service
-                </Link>{" "}
-                and{" "}
-                <Link
-                  href="/privacy"
-                  className="text-netflix-red hover:text-netflix-red/80"
-                >
-                  Privacy Policy
-                </Link>
-              </span>
-            </label>
+          <div className="space-y-3">
+            <ModernCheckbox
+              id="accept-terms"
+              checked={acceptTerms}
+              onChange={setAcceptTerms}
+              label={
+                <>
+                  I agree to the{" "}
+                  <Link
+                    href="/terms"
+                    className="text-netflix-red hover:text-netflix-red/80"
+                  >
+                    Terms of Service
+                  </Link>{" "}
+                  and{" "}
+                  <Link
+                    href="/privacy"
+                    className="text-netflix-red hover:text-netflix-red/80"
+                  >
+                    Privacy Policy
+                  </Link>
+                </>
+              }
+            />
 
-            <label className="flex items-start gap-3">
-              <input
-                type="checkbox"
-                className="w-4 h-4 mt-0.5 text-netflix-red bg-transparent border-gray-600 rounded focus:ring-netflix-red focus:ring-2"
-              />
-              <span className="text-sm text-gray-300 leading-relaxed">
-                Send me updates about new movies and features
-              </span>
-            </label>
+            <ModernCheckbox
+              id="send-updates"
+              checked={sendUpdates}
+              onChange={setSendUpdates}
+              label="Send me updates about new movies and features"
+            />
           </div>
 
           <ModernButton
@@ -253,9 +251,9 @@ export default function SignUpPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <ModernButton variant="secondary" size="md">
-              <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
+          <div className="grid grid-cols-2 gap-2">
+            <ModernButton variant="secondary" size="sm">
+              <svg className="w-4 h-4 mr-1.5" viewBox="0 0 24 24">
                 <path
                   fill="currentColor"
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -276,9 +274,9 @@ export default function SignUpPage() {
               Google
             </ModernButton>
 
-            <ModernButton variant="secondary" size="md">
+            <ModernButton variant="secondary" size="sm">
               <svg
-                className="w-5 h-5 mr-2"
+                className="w-4 h-4 mr-1.5"
                 fill="currentColor"
                 viewBox="0 0 24 24"
               >

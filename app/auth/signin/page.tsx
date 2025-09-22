@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import AuthLayout from "@/components/auth/auth-layout";
 import ModernInput from "@/components/auth/modern-input";
 import ModernButton from "@/components/auth/modern-button";
+import ModernCheckbox from "@/components/auth/modern-checkbox";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -20,6 +21,7 @@ export default function SignInPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,7 +61,7 @@ export default function SignInPage() {
         title="Welcome Back"
         subtitle="Sign in to continue watching your favorite movies"
       >
-        <form onSubmit={onSubmit} className="space-y-6">
+        <form onSubmit={onSubmit} className="space-y-4">
           {message && (
             <motion.div
               initial={{ opacity: 0, y: -10 }}
@@ -101,13 +103,13 @@ export default function SignInPage() {
           </div>
 
           <div className="flex items-center justify-between">
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                className="w-4 h-4 text-netflix-red bg-transparent border-gray-600 rounded focus:ring-netflix-red focus:ring-2"
-              />
-              <span className="ml-2 text-sm text-gray-300">Remember me</span>
-            </label>
+            <ModernCheckbox
+              id="remember-me"
+              checked={rememberMe}
+              onChange={setRememberMe}
+              label="Remember me"
+              className="flex-row gap-2"
+            />
 
             <Link
               href="/auth/forgot-password"
@@ -138,9 +140,9 @@ export default function SignInPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <ModernButton variant="secondary" size="md">
-              <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
+          <div className="grid grid-cols-2 gap-2">
+            <ModernButton variant="secondary" size="sm">
+              <svg className="w-4 h-4 mr-1.5" viewBox="0 0 24 24">
                 <path
                   fill="currentColor"
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -161,9 +163,9 @@ export default function SignInPage() {
               Google
             </ModernButton>
 
-            <ModernButton variant="secondary" size="md">
+            <ModernButton variant="secondary" size="sm">
               <svg
-                className="w-5 h-5 mr-2"
+                className="w-4 h-4 mr-1.5"
                 fill="currentColor"
                 viewBox="0 0 24 24"
               >

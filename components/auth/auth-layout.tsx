@@ -23,12 +23,12 @@ export default function AuthLayout({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="w-full max-w-md space-y-8"
+          className="w-full max-w-md space-y-6"
         >
           {/* Logo */}
           <div className="text-center">
             <Link href="/" className="inline-block">
-              <h1 className="text-4xl font-bold text-netflix-red mb-2 mt-9">
+              <h1 className="text-4xl font-bold text-netflix-red mb-2 mt-4">
                 Screenly
               </h1>
             </Link>
@@ -39,7 +39,7 @@ export default function AuthLayout({
           </div>
 
           {/* Form Content */}
-          <div className="bg-netflix-black/50 backdrop-blur-sm border border-gray-800 rounded-2xl p-8 shadow-2xl">
+          <div className="bg-netflix-black/50 backdrop-blur-sm border border-gray-800 rounded-2xl p-6 shadow-2xl">
             {children}
           </div>
         </motion.div>
