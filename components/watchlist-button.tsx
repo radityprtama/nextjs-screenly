@@ -1,33 +1,43 @@
-"use client"
+"use client";
 
-import { useState, useTransition } from 'react'
-import { Button } from '@/components/ui/button'
-import { Heart, Plus } from 'lucide-react'
+import { Button } from "@/components/ui/button";
+import { Plus, Check } from "lucide-react";
+import { useWatchlist } from "@/hooks/use-watchlist";
+import { MediaItem } from "@/lib/api/idlix-types";
 
-export default function WatchlistButton({ movieId, initialInWatchlist }: { movieId: string; initialInWatchlist: boolean }) {
-  const [inWatchlist, setInWatchlist] = useState(initialInWatchlist)
-  const [isPending, startTransition] = useTransition()
+interface WatchlistButtonProps {
+  item: MediaItem;
+  className?: string;
+}
 
-  const toggleWatchlist = () => {
-    startTransition(async () => {
-      const method = inWatchlist ? 'DELETE' : 'POST'
-      const res = await fetch('/api/watchlist', {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ movieId }),
-      })
-      if (res.ok) setInWatchlist(!inWatchlist)
-    })
-  }
+export default function WatchlistButton({ item, className }: WatchlistButtonProps) {
+  const { hydrated, isInWatchlist, toggleWatchlist } = useWatchlist();
+
+  if (!hydrated) return null;
+
+  const inList = isInWatchlist(item.id);
 
   return (
-    <Button onClick={toggleWatchlist} variant={inWatchlist ? 'secondary' : 'default'} disabled={isPending}>
-      {inWatchlist ? (
-        <Heart className="h-4 w-4 mr-2 fill-current text-red-500" />
+    <Button
+      variant={inList ? "secondary" : "default"}
+      onClick={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        toggleWatchlist(item);
+      }}
+      className={`rounded-full flex items-center justify-center gap-2 ${className}`}
+    >
+      {inList ? (
+        <>
+          <Check className="w-4 h-4" />
+          <span>My List</span>
+        </>
       ) : (
-        <Plus className="h-4 w-4 mr-2" />
+        <>
+          <Plus className="w-4 h-4" />
+          <span>Add to List</span>
+        </>
       )}
-      {inWatchlist ? 'In Watchlist' : 'Add to Watchlist'}
     </Button>
-  )
+  );
 }
