@@ -1,60 +1,55 @@
-import { tmdb, convertTMDBMovie } from '@/lib/tmdb'
-import MovieCard from '@/components/movie-card'
-import HeroSection from '@/components/hero-section'
+import React from "react";
+import { idlixApi } from "@/lib/api/idlix-client";
+import { normalizeIdlixItem } from "@/lib/api/idlix-normalizers";
+import HeroSection from "@/components/hero-section";
+import MediaRail from "@/components/media-rail";
+import { MediaItem } from "@/lib/api/idlix-types";
 
-export const revalidate = 3600 // Revalidate every hour
+export const revalidate = 1800; // 30 minutes cache
 
 export default async function HomePage() {
-  try {
-    const [trendingResponse, popularResponse] = await Promise.all([
-      tmdb.getTrendingMovies('week'),
-      tmdb.getPopularMovies(1),
-    ])
+  // Concurrent fetch with full isolation to prevent single endpoint failure crashes
+  const results = await Promise.allSettled([
+    idlixApi.getFeatured(),
+    idlixApi.getCinemaXXI(),
+    idlixApi.getTrendingMovies(),
+    idlixApi.getTrendingSeries(),
+    idlixApi.getMCUMovies(),
+    idlixApi.getNetflixSeries(),
+  ]);
 
-    const featured = trendingResponse.results[0] ? convertTMDBMovie(trendingResponse.results[0]) : null
-    const trending = trendingResponse.results.slice(0, 12).map(convertTMDBMovie)
-    const popular = popularResponse.results.slice(0, 12).map(convertTMDBMovie)
+  const featuredRaw = results[0].status === "fulfilled" ? results[0].value?.data || [] : [];
+  const cinemaxxiRaw = results[1].status === "fulfilled" ? results[1].value?.data || [] : [];
+  const trendingMoviesRaw = results[2].status === "fulfilled" ? results[2].value?.data || [] : [];
+  const trendingSeriesRaw = results[3].status === "fulfilled" ? results[3].value?.data || [] : [];
+  const mcuRaw = results[4].status === "fulfilled" ? results[4].value?.data || [] : [];
+  const netflixRaw = results[5].status === "fulfilled" ? results[5].value?.data || [] : [];
 
-    return (
-      <div>
-        {/* Hero section */}
-        {featured && <HeroSection movie={featured} />}
+  // Normalize
+  const featured: MediaItem[] = featuredRaw.map((i: any) => normalizeIdlixItem(i));
+  const cinemaxxi: MediaItem[] = cinemaxxiRaw.map((i: any) => normalizeIdlixItem(i, "movie"));
+  const trendingMovies: MediaItem[] = trendingMoviesRaw.map((i: any) => normalizeIdlixItem(i, "movie"));
+  const trendingSeries: MediaItem[] = trendingSeriesRaw.map((i: any) => normalizeIdlixItem(i, "series"));
+  const mcu: MediaItem[] = mcuRaw.map((i: any) => normalizeIdlixItem(i, "movie"));
+  const netflix: MediaItem[] = netflixRaw.map((i: any) => normalizeIdlixItem(i, "series"));
 
-        {/* Trending movies */}
-        <section className="container-page py-8">
-          <h2 className="section-title">Trending This Week</h2>
-          <div className="grid-movies">
-            {trending.map((movie) => (
-              <MovieCard key={movie.id} movie={movie} />
-            ))}
-          </div>
-        </section>
+  // Select first item of featured as primary hero highlight
+  const heroMedia = featured[0] || null;
 
-        {/* Popular movies */}
-        <section className="container-page py-8">
-          <h2 className="section-title">Popular Movies</h2>
-          <div className="grid-movies">
-            {popular.map((movie) => (
-              <MovieCard key={movie.id} movie={movie} />
-            ))}
-          </div>
-        </section>
+  return (
+    <div className="space-y-8 -mt-24">
+      {/* Immersive Hero Header */}
+      {heroMedia && <HeroSection media={heroMedia} />}
+
+      {/* Catalog Rails */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <MediaRail title="Featured & Popular Now" items={featured} />
+        <MediaRail title="Cinema XXI (Recent Movies)" items={cinemaxxi} />
+        <MediaRail title="Trending Movies" items={trendingMovies} />
+        <MediaRail title="Trending TV Series" items={trendingSeries} />
+        <MediaRail title="Marvel Cinematic Universe (MCU)" items={mcu} />
+        <MediaRail title="Netflix Originals" items={netflix} />
       </div>
-    )
-  } catch (error) {
-    console.error('Error fetching movies:', error)
-    return (
-      <div className="container-page py-8">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">Unable to load movies</h2>
-          <p className="text-gray-400 mb-4">
-            Please make sure TMDB API key is configured in your environment variables.
-          </p>
-          <p className="text-sm text-gray-500">
-            Add TMDB_API_KEY to your .env.local file
-          </p>
-        </div>
-      </div>
-    )
-  }
+    </div>
+  );
 }
