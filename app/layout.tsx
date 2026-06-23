@@ -1,30 +1,30 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navigation from "@/components/navbar";
+import Navbar from "@/components/navbar";
 import Providers from "@/components/providers";
-import ConditionalLayout from "@/components/conditional-layout";
+import AppShell from "@/components/app-shell";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Screenly - Movie Streaming",
-  description: "Modern movie streaming platform built with Next.js",
+  title: "Screenly — Streaming Catalog",
+  description: "Discover movies and series through a modern streaming-style catalog experience.",
   icons: {
     icon: [
       {
-        url: '/favicon.svg',
-        type: 'image/svg+xml',
+        url: "/favicon.svg",
+        type: "image/svg+xml",
       },
       {
-        url: '/favicon.ico',
-        sizes: '32x32',
-        type: 'image/x-icon',
-      }
+        url: "/favicon.ico",
+        sizes: "32x32",
+        type: "image/x-icon",
+      },
     ],
     apple: {
-      url: '/favicon.svg',
-      type: 'image/svg+xml',
+      url: "/favicon.svg",
+      type: "image/svg+xml",
     },
   },
 };
@@ -35,12 +35,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className="dark bg-[#0e0f11] text-white" suppressHydrationWarning>
       <body className={inter.className}>
         <Providers>
-          <ConditionalLayout>
-            {children}
-          </ConditionalLayout>
+          <Navbar />
+          <AppShell>{children}</AppShell>
         </Providers>
       </body>
     </html>
