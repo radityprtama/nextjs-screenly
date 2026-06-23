@@ -7,16 +7,22 @@ export async function fetchFromIdlix<T>(path: string, options?: RequestInit): Pr
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
   const url = `${API_BASE_URL}${cleanPath}`;
 
-  const res = await fetch(url, {
-    ...options,
-    next: { revalidate: 3600 },
-  });
+  try {
+    const res = await fetch(url, {
+      ...options,
+      next: { revalidate: 3600 },
+    });
 
-  if (!res.ok) {
-    throw new Error(`IDLIX API Error: ${res.status} ${res.statusText} at ${path}`);
+    if (!res.ok) {
+      console.warn(`IDLIX API Warning: ${res.status} ${res.statusText} at ${path}`);
+      return { success: false, data: [] } as unknown as T;
+    }
+
+    return await res.json() as T;
+  } catch (error) {
+    console.error(`IDLIX API connection failed at ${path}:`, error);
+    return { success: false, data: [] } as unknown as T;
   }
-
-  return res.json() as Promise<T>;
 }
 
 export const idlixApi = {
