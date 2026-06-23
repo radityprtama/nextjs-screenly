@@ -1,112 +1,79 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
-import MovieCard from '@/components/movie-card'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Search } from 'lucide-react'
-import { Movie } from '@/types/movie'
+import React, { useState, useEffect } from "react";
+import { Search, Loader2 } from "lucide-react";
+import { normalizeIdlixItem } from "@/lib/api/idlix-normalizers";
+import MediaGrid from "@/components/media-grid";
+import { MediaItem } from "@/lib/api/idlix-types";
 
 export default function SearchPage() {
-  const searchParams = useSearchParams()
-  const [query, setQuery] = useState(searchParams.get('q') || '')
-  const [movies, setMovies] = useState<Movie[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-
-  const searchMovies = async (searchQuery: string) => {
-    if (!searchQuery.trim()) {
-      setMovies([])
-      return
-    }
-
-    setLoading(true)
-    setError('')
-
-    try {
-      const response = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}`)
-      if (!response.ok) throw new Error('Search failed')
-      
-      const data = await response.json()
-      setMovies(data.movies || [])
-    } catch (err) {
-      setError('Failed to search movies')
-      setMovies([])
-    } finally {
-      setLoading(false)
-    }
-  }
+  const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [results, setResults] = useState<MediaItem[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const initialQuery = searchParams.get('q')
-    if (initialQuery) {
-      setQuery(initialQuery)
-      searchMovies(initialQuery)
-    }
-  }, [searchParams])
+    const timer = setTimeout(() => {
+      setDebouncedQuery(query);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [query]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    searchMovies(query)
-    
-    // Update URL
-    const url = new URL(window.location.href)
-    if (query.trim()) {
-      url.searchParams.set('q', query)
-    } else {
-      url.searchParams.delete('q')
+  useEffect(() => {
+    if (!debouncedQuery.trim()) {
+      setResults([]);
+      return;
     }
-    window.history.pushState({}, '', url.toString())
-  }
+
+    setLoading(true);
+    fetch(`/api/idlix/search?q=${encodeURIComponent(debouncedQuery)}`)
+      .then((res) => res.json())
+      .then((res) => {
+        if (res && res.success) {
+          const rawList = res.results || res.data || [];
+          setResults(rawList.map((i: any) => normalizeIdlixItem(i)));
+        }
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
+  }, [debouncedQuery]);
 
   return (
-    <div className="container-page py-10 mt-12">
-      <h1 className="section-title">Search Movies</h1>
-      
-      <form onSubmit={handleSubmit} className="flex gap-2 mb-8 max-w-md">
-        <Input
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <div>
+        <h1 className="text-3xl font-extrabold tracking-tight">Search Catalogue</h1>
+        <p className="text-white/50 text-sm mt-1">Search through all movies and TV shows.</p>
+      </div>
+
+      {/* Input Bar */}
+      <div className="relative max-w-xl">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+        <input
           type="text"
-          placeholder="Search for movies..."
+          placeholder="Type titles, years, actors..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="flex-1"
+          className="w-full bg-white/5 border border-white/10 rounded-full py-3.5 pl-12 pr-6 text-sm text-white focus:outline-none focus:border-red-500 focus:bg-white/10 transition-all placeholder:text-white/30"
         />
-        <Button type="submit" disabled={loading}>
-          <Search className="h-4 w-4" />
-        </Button>
-      </form>
+      </div>
 
-      {loading && (
-        <div className="text-center py-8">
-          <div className="text-gray-400">Searching...</div>
+      {/* Results */}
+      {loading ? (
+        <div className="flex items-center gap-2 text-white/50 py-12">
+          <Loader2 className="w-5 h-5 animate-spin text-red-500" />
+          <span>Searching catalog...</span>
         </div>
-      )}
-
-      {error && (
-        <div className="text-center py-8">
-          <div className="text-red-400">{error}</div>
+      ) : results.length > 0 ? (
+        <MediaGrid items={results} />
+      ) : debouncedQuery.trim() ? (
+        <div className="py-12 text-center text-white/40">
+          <p>No results found for "{debouncedQuery}"</p>
         </div>
-      )}
-
-      {!loading && !error && movies.length === 0 && query && (
-        <div className="text-center py-8">
-          <div className="text-gray-400">No movies found for "{query}"</div>
-        </div>
-      )}
-
-      {movies.length > 0 && (
-        <div>
-          <h2 className="text-lg font-semibold mb-4">
-            Search results for "{query}" ({movies.length} found)
-          </h2>
-          <div className="grid-movies">
-            {movies.map((movie) => (
-              <MovieCard key={movie.id} movie={movie} />
-            ))}
-          </div>
+      ) : (
+        <div className="py-12 text-center text-white/40">
+          <p>Start typing to search movies and series.</p>
         </div>
       )}
     </div>
-  )
+  );
 }
