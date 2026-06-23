@@ -1,69 +1,53 @@
-import MovieCard from '@/components/movie-card'
-import { tmdb, convertTMDBMovie } from '@/lib/tmdb'
+import React from "react";
+import { idlixApi } from "@/lib/api/idlix-client";
+import { normalizeIdlixItem } from "@/lib/api/idlix-normalizers";
+import MediaGrid from "@/components/media-grid";
+import GenreChips from "@/components/genre-chips";
+import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 
-export const revalidate = 3600 // Revalidate every hour
+export const revalidate = 1800;
 
 export default async function MoviesPage() {
-  try {
-    const [popularResponse, topRatedResponse, nowPlayingResponse] = await Promise.all([
-      tmdb.getPopularMovies(1),
-      tmdb.getTopRatedMovies(1),
-      tmdb.getNowPlayingMovies(1),
-    ])
+  const [trendingRes, mcuRes] = await Promise.all([
+    idlixApi.getTrendingMovies(),
+    idlixApi.getMCUMovies(),
+  ]);
 
-    const popular = popularResponse.results.map(convertTMDBMovie)
-    const topRated = topRatedResponse.results.map(convertTMDBMovie)
-    const nowPlaying = nowPlayingResponse.results.map(convertTMDBMovie)
+  const trending = (trendingRes?.data || []).slice(0, 12).map((i: any) => normalizeIdlixItem(i, "movie"));
+  const mcu = (mcuRes?.data || []).slice(0, 12).map((i: any) => normalizeIdlixItem(i, "movie"));
 
-    return (
-      <div className="container-page py-8">
-        <h1 className="section-title">Movies</h1>
-        
-        {/* Popular Movies */}
-        <section className="mb-12">
-          <h2 className="text-xl font-semibold mb-4">Popular Movies</h2>
-          <div className="grid-movies">
-            {popular.map((movie) => (
-              <MovieCard key={movie.id} movie={movie} />
-            ))}
-          </div>
-        </section>
-
-        {/* Top Rated Movies */}
-        <section className="mb-12">
-          <h2 className="text-xl font-semibold mb-4">Top Rated</h2>
-          <div className="grid-movies">
-            {topRated.map((movie) => (
-              <MovieCard key={movie.id} movie={movie} />
-            ))}
-          </div>
-        </section>
-
-        {/* Now Playing Movies */}
-        <section className="mb-12">
-          <h2 className="text-xl font-semibold mb-4">Now Playing</h2>
-          <div className="grid-movies">
-            {nowPlaying.map((movie) => (
-              <MovieCard key={movie.id} movie={movie} />
-            ))}
-          </div>
-        </section>
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+      <div>
+        <h1 className="text-3xl font-extrabold tracking-tight">Browse Movies</h1>
+        <p className="text-white/50 text-sm mt-1">Discover popular cinematic titles.</p>
+        <GenreChips type="movie" />
       </div>
-    )
-  } catch (error) {
-    console.error('Error fetching movies:', error)
-    return (
-      <div className="container-page py-8">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">Unable to load movies</h2>
-          <p className="text-gray-400 mb-4">
-            Please make sure TMDB API key is configured in your environment variables.
-          </p>
-          <p className="text-sm text-gray-500">
-            Add TMDB_API_KEY to your .env.local file
-          </p>
+
+      {/* Trending Section */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between border-b border-white/5 pb-2">
+          <h2 className="text-xl font-bold tracking-tight text-white/90">Trending Movies</h2>
+          <Link href="/movies/trending" className="text-xs text-red-500 hover:underline flex items-center font-bold">
+            <span>View All</span>
+            <ChevronRight className="w-3.5 h-3.5" />
+          </Link>
         </div>
+        <MediaGrid items={trending} />
       </div>
-    )
-  }
+
+      {/* MCU Section */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between border-b border-white/5 pb-2">
+          <h2 className="text-xl font-bold tracking-tight text-white/90">Marvel Cinematic Universe</h2>
+          <Link href="/movies/mcu" className="text-xs text-red-500 hover:underline flex items-center font-bold">
+            <span>View All</span>
+            <ChevronRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+        <MediaGrid items={mcu} />
+      </div>
+    </div>
+  );
 }
